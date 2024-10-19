@@ -1,7 +1,7 @@
 import { jumpInstruction, copyInstruction, equalAndLessThanInstruction, addAndSubtractInstruction } from "./instructionFn.js";
 
 const intputProgram = `3 3 1 6 17 17 2 2 3 3 7 17 18 4 17 18 19 9 0 0`;
-
+console.log("Hello guys, this is pradeep and this is small version of sprint and if you want to add your sprint program you can add to above variable name inputProgram in sprint.js code file. Thank you for reviewing my code.")
 console.log(intputProgram);
 
 let inputValueArray = intputProgram.split(" ").map(Number);
