@@ -2,6 +2,11 @@ const jump = (program, cell) => {
   return program[cell] - 1;
 };
 
+const hault = () => {
+  console.log("Hault...");
+  return -1;
+};
+
 const copy = (program, cell) => {
   const firstIndex = program[cell] - 1;
   const secondIndex = program[cell + 1] - 1;
@@ -18,30 +23,35 @@ const equal = (program, cell) => {
   return isEqual ? program[cell + 2] - 1 : cell + 3;
 };
 
-const lessThan = (arr, cell) => {
-  const firstIndex = arr[cell] - 1;
-  const secondIndex = arr[cell + 1] - 1;
-  const isLessThan = arr[firstIndex] < arr[secondIndex];
+const lessThan = (program, cell) => {
+  const firstIndex = program[cell] - 1;
+  const secondIndex = program[cell + 1] - 1;
+  const isLessThan = program[firstIndex] < program[secondIndex];
 
   return isLessThan ? program[cell + 2] - 1 : cell + 3;
 };
 
-const add = (program, index) => {
-  const firstIndex = program[index] - 1;
-  const secondIndex = program[index + 1] - 1;
-  const resultIndex = program[index + 2] - 1;
+const add = (program, cell) => {
+  const firstIndex = program[cell] - 1;
+  const secondIndex = program[cell + 1] - 1;
+  const resultIndex = program[cell + 2] - 1;
   program[resultIndex] = program[firstIndex] + program[secondIndex];
 
-  return index + 3;
+  return cell + 3;
 };
 
-const sub = (program, index) => {
-  const firstIndex = program[index] - 1;
-  const secondIndex = program[index + 1] - 1;
-  const resultIndex = program[index + 2] - 1;
+const sub = (program, cell) => {
+  const firstIndex = program[cell] - 1;
+  const secondIndex = program[cell + 1] - 1;
+  const resultIndex = program[cell + 2] - 1;
   program[resultIndex] = program[firstIndex] - program[secondIndex];
 
-  return index + 3;
+  return cell + 3;
+};
+
+const invalid = (program, cell) => {
+  console.log("Invalid instruction :", program[cell]);
+  return -1;
 };
 
 const instructionExecution = (program, index) => {
@@ -49,7 +59,7 @@ const instructionExecution = (program, index) => {
     case 3:
       return jump(program, index + 1);
     case 9:
-      return -1;
+      return hault();
     case 7:
       return copy(program, index + 1);
     case 4:
@@ -61,8 +71,7 @@ const instructionExecution = (program, index) => {
     case 2:
       return sub(program, index + 1);
     default:
-      console.log("Invalid instruction :", program[index]);
-      return;
+      return invalid(program, index);
   }
 };
 
@@ -78,10 +87,7 @@ const programExecution = (program) => {
   while (index < program.length) {
     index = instructionExecution(program, index);
 
-    if (index < 0) {
-      console.log("Hault...");
-      return;
-    };
+    if (index < 0) return;
 
     display(program);
   }
