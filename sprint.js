@@ -1,106 +1,112 @@
-const jumpInstruction = function (arr, cell) {
-  cell = cell + 1;
-  cell = arr[cell] - 1;
-  return cell;
+const jump = (program, cell) => {
+  return program[cell] - 1;
 };
 
-const copyInstruction = function (arr, cell) {
-  cell++;
-  const firstAddress = arr[cell] - 1;
-  cell++;
-  const secondAddress = arr[cell] - 1;
-  arr[secondAddress] = arr[firstAddress];
-  cell++;
-  return [arr, cell];
+const copy = (program, cell) => {
+  const firstIndex = program[cell] - 1;
+  const secondIndex = program[cell + 1] - 1;
+  program[secondIndex] = program[firstIndex];
+
+  return cell + 2;
 };
 
-const equalAndLessThanInstruction = (arr, cell) => {
-  let isLessThan = false;
-  if (arr[cell] === 5) {
-    isLessThan = true;
-  }
+const equal = (program, cell) => {
+  const firstIndex = program[cell] - 1;
+  const secondIndex = program[cell + 1] - 1;
+  const isEqual = program[firstIndex] === program[secondIndex];
 
-  cell++;
-  const firstNumAddress = arr[cell] - 1;
-  cell++;
-  const secondNumAddress = arr[cell] - 1;
-  cell++;
-
-  const addressAtConditionMatch = arr[cell] - 1;
-  let isConditionMatch = arr[firstNumAddress] === arr[secondNumAddress];
-
-  if (isLessThan) {
-    isConditionMatch = arr[firstNumAddress] < arr[secondNumAddress];
-  }
-
-  cell++;
-  if (isConditionMatch) {
-    cell = addressAtConditionMatch;
-  }
-
-  return cell;
+  return isEqual ? program[cell + 2] - 1 : cell + 3;
 };
 
-const addAndSubtractInstruction = (addSubArr, addSubCell) => {
-  let isSubtract = addSubArr[addSubCell] === 2;
+const lessThan = (arr, cell) => {
+  const firstIndex = arr[cell] - 1;
+  const secondIndex = arr[cell + 1] - 1;
+  const isLessThan = arr[firstIndex] < arr[secondIndex];
+
+  return isLessThan ? program[cell + 2] - 1 : cell + 3;
+};
+
+const add = (program, index) => {
+  const firstIndex = program[index] - 1;
+  const secondIndex = program[index + 1] - 1;
+  const resultIndex = program[index + 2] - 1;
+  program[resultIndex] = program[firstIndex] + program[secondIndex];
+
+
+  return index + 3;
+};
+
+const sub = (addSubArr, addSubCell) => {
+  const isSubtract = addSubArr[addSubCell] === 2;
   addSubCell++;
-  let firstNumberAddress = addSubArr[addSubCell] - 1;
+  const firstNumberAddress = addSubArr[addSubCell] - 1;
   addSubCell++;
-  let secondNumberAddress = addSubArr[addSubCell] - 1;
+  const secondNumberAddress = addSubArr[addSubCell] - 1;
   addSubCell++;
-  let resultStoringAddress = addSubArr[addSubCell] - 1;
+  const resultStoringAddress = addSubArr[addSubCell] - 1;
+
   if (isSubtract) {
     addSubArr[resultStoringAddress] = addSubArr[firstNumberAddress] - addSubArr[secondNumberAddress];
   } else {
     addSubArr[resultStoringAddress] = addSubArr[firstNumberAddress] + addSubArr[secondNumberAddress];
   }
+
   addSubCell++;
   return { addSubArr, addSubCell };
 };
 
-const intputProgram = '3 3 1 6 17 17 2 2 3 3 7 17 18 4 17 18 19 9 0 0';
-console.log(intputProgram);
-
-const inputValueArray = intputProgram.split(" ").map(Number);
-
-let loopExiterForStop = false;
-
-for (let cellNumber = 0; cellNumber <= inputValueArray.length && !loopExiterForStop; cellNumber++) {
-  switch (inputValueArray[cellNumber]) {
+const instructionExecution = (program, index) => {
+  switch (program[index]) {
     case 3:
-      cellNumber = jumpInstruction(inputValueArray, cellNumber) - 1;
-      break;
+      return jump(program, index + 1);
     case 9:
-      loopExiterForStop = true;
-      console.log("hault");
-      break;
+      return -1;
     case 7:
-      const [arr, cell] = copyInstruction(inputValueArray, cellNumber);
-      cellNumber = cell - 1;
-      inputValueArray = arr;
-      break;
+      return copy(program, index + 1);
     case 4:
-      cellNumber = equalAndLessThanInstruction(inputValueArray, cellNumber) - 1;
-      break;
+      return equal(program, index + 1);
     case 5:
-      cellNumber = equalAndLessThanInstruction(inputValueArray, cellNumber) - 1;
-      break;
+      return lessThan(program, index + 1);
     case 1:
-      let { addSubArr, addSubCell } = addAndSubtractInstruction(inputValueArray, cellNumber);
-      inputValueArray = addSubArr;
-      cellNumber = addSubCell - 1;
-      break;
+      return add(program, index + 1);
     case 2: {
-      let { addSubArr, addSubCell } = addAndSubtractInstruction(inputValueArray, cellNumber);
-      inputValueArray = addSubArr;
-      cellNumber = addSubCell - 1;
-      break;
+      let { addSubArr, addSubCell } = sub(program, index);
+      program = addSubArr;
+      index = addSubCell - 1;
+      return;
     }
     default:
-      console.log(`Invalid instruction : ${inputValueArray[cellNumber]}`);
-      break;
+      console.log("Invalid instruction :", program[index]);
+      return;
   }
+};
 
-  if (loopExiterForStop) break;
-  console.log(inputValueArray);
-}
+
+const display = (list) => {
+  console.log(list);
+};
+
+
+const programExecution = (program) => {
+  let index = 0;
+
+  while (index < program.length) {
+    index = instructionExecution(program, index);
+
+    if (index < 0) {
+      console.log("Hault...");
+      return;
+    };
+
+    display(program);
+  }
+};
+
+const start = () => {
+  const input = prompt("Enter the sprint program:");
+  const program = input.split(" ").map(number => +number);
+
+  programExecution(program);
+};
+
+start();
