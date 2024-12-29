@@ -32,27 +32,16 @@ const add = (program, index) => {
   const resultIndex = program[index + 2] - 1;
   program[resultIndex] = program[firstIndex] + program[secondIndex];
 
-
   return index + 3;
 };
 
-const sub = (addSubArr, addSubCell) => {
-  const isSubtract = addSubArr[addSubCell] === 2;
-  addSubCell++;
-  const firstNumberAddress = addSubArr[addSubCell] - 1;
-  addSubCell++;
-  const secondNumberAddress = addSubArr[addSubCell] - 1;
-  addSubCell++;
-  const resultStoringAddress = addSubArr[addSubCell] - 1;
+const sub = (program, index) => {
+  const firstIndex = program[index] - 1;
+  const secondIndex = program[index + 1] - 1;
+  const resultIndex = program[index + 2] - 1;
+  program[resultIndex] = program[firstIndex] - program[secondIndex];
 
-  if (isSubtract) {
-    addSubArr[resultStoringAddress] = addSubArr[firstNumberAddress] - addSubArr[secondNumberAddress];
-  } else {
-    addSubArr[resultStoringAddress] = addSubArr[firstNumberAddress] + addSubArr[secondNumberAddress];
-  }
-
-  addSubCell++;
-  return { addSubArr, addSubCell };
+  return index + 3;
 };
 
 const instructionExecution = (program, index) => {
@@ -69,12 +58,8 @@ const instructionExecution = (program, index) => {
       return lessThan(program, index + 1);
     case 1:
       return add(program, index + 1);
-    case 2: {
-      let { addSubArr, addSubCell } = sub(program, index);
-      program = addSubArr;
-      index = addSubCell - 1;
-      return;
-    }
+    case 2:
+      return sub(program, index + 1);
     default:
       console.log("Invalid instruction :", program[index]);
       return;
