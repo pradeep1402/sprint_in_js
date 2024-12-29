@@ -76,7 +76,10 @@ const instructionExecution = (program, index) => {
 };
 
 const display = (program) => {
-  console.log(program);
+  const programObject = program
+    .reduce((object, value, index) => ({ ...object, [index + 1]: value }), {});
+
+  console.table({ programObject });
 };
 
 export const programExecution = (program) => {
